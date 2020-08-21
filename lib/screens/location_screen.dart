@@ -14,34 +14,34 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  WeatherModel weatherModel = WeatherModel();
+  WeatherModel weather = WeatherModel();
   int temperature;
-  String cityName;
   String weatherIcon;
+  String cityName;
   String weatherMessage;
 
   @override
   void initState() {
     super.initState();
-    updateUi(widget.locationWeather);
+
+    updateUI(widget.locationWeather);
   }
 
-  void updateUi(dynamic weatherData) {
+  void updateUI(dynamic weatherData) {
     setState(() {
-      if (weatherData != null) {
-        double temp = weatherData['main']['temp'];
-        temperature = temp.toInt();
-        cityName = weatherData['name'];
-        weatherIcon =
-            weatherModel.getWeatherIcon(weatherData['weather'][0]['id']);
-        weatherMessage = weatherModel.getMessage(temperature);
-      } else {
+      if (weatherData == null) {
         temperature = 0;
         weatherIcon = 'Error';
-        weatherMessage = 'Unable to get data';
+        weatherMessage = 'Unable to get weather data';
         cityName = '';
         return;
       }
+      double temp = weatherData['main']['temp'];
+      temperature = temp.toInt();
+      var condition = weatherData['weather'][0]['id'];
+      weatherIcon = weather.getWeatherIcon(condition);
+      weatherMessage = weather.getMessage(temperature);
+      cityName = weatherData['name'];
     });
   }
 
@@ -68,8 +68,8 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   FlatButton(
                     onPressed: () async {
-                      var weatherData = await weatherModel.getLocationWeather();
-                      updateUi(weatherData);
+                      var weatherData = await weather.getLocationWeather();
+                      updateUI(weatherData);
                     },
                     child: Icon(
                       Icons.near_me,
@@ -79,15 +79,17 @@ class _LocationScreenState extends State<LocationScreen> {
                   FlatButton(
                     onPressed: () async {
                       var typedName = await Navigator.push(
-                        this.context,
-                        MaterialPageRoute(builder: (context) {
-                          return CityScreen();
-                        }),
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return CityScreen();
+                          },
+                        ),
                       );
                       if (typedName != null) {
                         var weatherData =
-                            await weatherModel.getCityWeather(cityName);
-                        updateUi(weatherData);
+                            await weather.getCityWeather(typedName);
+                        updateUI(weatherData);
                       }
                     },
                     child: Icon(
@@ -106,7 +108,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '$weatherIcon️',
+                      weatherIcon,
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -115,7 +117,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "$weatherMessage in $cityName!",
+                  '$weatherMessage in $cityName',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -127,4 +129,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-/*   */

@@ -27,7 +27,7 @@ class _CityScreenState extends State<CityScreen> {
                 alignment: Alignment.topLeft,
                 child: FlatButton(
                   onPressed: () {
-                    Navigator.pop(this.context);
+                    Navigator.pop(context);
                   },
                   child: Icon(
                     Icons.arrow_back_ios,
@@ -38,7 +38,9 @@ class _CityScreenState extends State<CityScreen> {
               Container(
                 padding: EdgeInsets.all(20.0),
                 child: TextField(
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
                   decoration: kTextFieldInputDecoration,
                   onChanged: (value) {
                     cityName = value;
