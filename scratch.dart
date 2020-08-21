@@ -1,6 +1,3 @@
-erformTasks();
-}
-
 void performTasks() async {
   task1();
   print(task2());
