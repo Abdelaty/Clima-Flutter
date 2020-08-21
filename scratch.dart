@@ -1,5 +1,4 @@
-void main() {
-  performTasks();
+erformTasks();
 }
 
 void performTasks() async {
